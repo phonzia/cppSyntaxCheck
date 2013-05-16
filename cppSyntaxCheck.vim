@@ -1,9 +1,8 @@
 " ======================================================================================
 " File         : cppSpellCheck.vim
 " Author       : Yang Fengjia
-" Last Change  : 2013.05.16
+" Last Change  : 09/03/2012 | 14:15:04 PM | Monday,September
 " Description  : A cpp language spell check script
-" Version      : 0.5
 " ======================================================================================
 
 "g++
@@ -39,8 +38,12 @@ function! s:ShowErrC()
     let include_path=substitute(g:include_path, ':', " -I", "g")
 
     "show error
-    let compile_cmd=g:cpp_compiler . ' -o .tmpobject -c ' . buf_name . ' ' . g:compile_flag . ' ' . include_path . ' 2>&1 '  . '|grep error|grep ' . file_name
+"    let compile_cmd=g:cpp_compiler . ' -o .tmpobject -c ' . buf_name . ' ' . g:compile_flag . ' ' . include_path . ' 2>&1 '  . '|grep error|grep ' . file_name
+    let compile_cmd=g:cpp_compiler . ' -o .tmpobject -c ' . buf_name . ' ' . g:compile_flag . ' ' . include_path . '  2>&1 | grep -v function >.err'
     let compile_result=system(compile_cmd)
+    execute 'silent cfile .err' 
+    let show_cmd = 'cat .err |grep error|grep ' .file_name
+    let compile_result=system(show_cmd)
     let line_list=split(compile_result, '\n')
 
     for error_str in line_list
@@ -77,9 +80,8 @@ function! s:ShowErrC()
     call s:SignErrWarn()
 
     "remove file created
-    let rm_cmd='rm .tmpobject'
+    let rm_cmd='rm .tmpobject .err'
     call system(rm_cmd)
-
 endfunction
 
 function! ShowCompile()
