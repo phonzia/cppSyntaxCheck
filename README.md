@@ -15,4 +15,4 @@ let g:cpp_compiler="LANG=C g++ -Wall"
 let g:longest_text=120
 
 Key binding:
-<Leader>s      go to next signed error or warning line
+\<Leader\>s      go to next signed error or warning line
