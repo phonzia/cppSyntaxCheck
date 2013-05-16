@@ -1,8 +1,9 @@
 " ======================================================================================
 " File         : cppSpellCheck.vim
 " Author       : Yang Fengjia
-" Last Change  : 09/03/2012 | 14:15:04 PM | Monday,September
+" Last Change  : 2013.05.16
 " Description  : A cpp language spell check script
+" Version      : 0.5
 " ======================================================================================
 
 "g++
@@ -17,6 +18,9 @@ if(!exists("g:cpp_compiler"))
 endif
 if(!exists("g:enable_warning"))
     let g:enable_warning=0
+endif
+if(!exists("g:longest_text"))
+    let g:longest_text=100
 endif
 
 sign define GCCError text=>> texthl=Error
@@ -165,13 +169,21 @@ function! s:ShowErrMsg()
     let pos=getpos(".")
     if has_key(b:error_list, pos[1])
         let item = get(b:error_list, pos[1])
-        echo item.text
+        if ( len(item.text) < g:longest_text )
+            echo item.text
+        else
+            echo "!!!A error should be showed here, but the error information is too long"
+        endif
     else
         echo
     endif
     if has_key(b:warning_list, pos[1])
         let item = get(b:warning_list, pos[1])
-        echo item.text
+        if ( len(item.text) < g:longest_text )
+            echo item.text
+        else
+            echo "!!!A warning should be showed here, but the error information is too long"
+        endif
     else
         echo
     endif
