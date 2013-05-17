@@ -37,10 +37,21 @@ function! s:ShowErrC()
     let file_name=dir_tree[len(dir_tree)-1]
     let include_path=substitute(g:include_path, ':', " -I", "g")
 
-    "show error
-    let compile_cmd=g:cpp_compiler . ' -x c++ -fsyntax-only ' . buf_name . ' ' 
-                \. g:compile_flag . ' ' . include_path . 
-                \'  2>&1 | grep -v function >.err'
+    "show error    
+    let buf_name_split=split(file_name, '\.')
+    if ( 'h' == buf_name_split[len(buf_name_split)-1] )
+        let compile_cmd=g:cpp_compiler . ' -o .tmpobject -c ' . buf_name . ' ' 
+                    \. g:compile_flag . ' ' . include_path . 
+                    \'  2>&1 | grep -v function >.err'
+    elseif ('hpp' == buf_name_split[len(buf_name_split)-1])
+        let compile_cmd=g:cpp_compiler . ' -o .tmpobject -c ' . buf_name . ' ' 
+                    \. g:compile_flag . ' ' . include_path . 
+                    \'  2>&1 | grep -v function >.err'
+    else
+        let compile_cmd=g:cpp_compiler . ' -x c++ -fsyntax-only ' . buf_name . ' ' 
+                    \. g:compile_flag . ' ' . include_path . 
+                    \'  2>&1 | grep -v function >.err'
+    endif
     call system(compile_cmd)
     execute 'silent cfile .err' 
     let show_cmd = 'cat .err |grep error|grep ' .file_name
@@ -81,7 +92,7 @@ function! s:ShowErrC()
     call s:SignErrWarn()
 
     "remove file created
-    let rm_cmd='rm .err > /dev/null 2>&1'
+    let rm_cmd='rm .err .tmpobject > /dev/null 2>&1'
     call system(rm_cmd)
 endfunction
 
