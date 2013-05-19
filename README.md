@@ -1,5 +1,5 @@
 cppSyntaxCheck
-version 0.9
+version 1.0
 ==============
 <p>This a script use g++ as a parser to check the syntax of cpp source code, and show where the errors and warnings are. Installion is in a easy way and everytime you save the file, syntax errors and warnings are showed.
 <p>You can also check errors in quickfix window by using command :cw
