@@ -42,15 +42,15 @@ function! s:ShowErrC()
     if ( 'h' == buf_name_split[len(buf_name_split)-1] )
         let compile_cmd=g:cpp_compiler . ' -o .tmpobject -c ' . buf_name . ' ' 
                     \. g:compile_flag . ' ' . include_path . 
-                    \'  2>&1 | grep -v function >.err'
+                    \'     >.err 2>&1'
     elseif ('hpp' == buf_name_split[len(buf_name_split)-1])
         let compile_cmd=g:cpp_compiler . ' -o .tmpobject -c ' . buf_name . ' ' 
                     \. g:compile_flag . ' ' . include_path . 
-                    \'  2>&1 | grep -v function >.err'
+                    \'     >.err 2>&1'
     else
         let compile_cmd=g:cpp_compiler . ' -x c++ -fsyntax-only ' . buf_name . ' ' 
                     \. g:compile_flag . ' ' . include_path . 
-                    \'  2>&1 | grep -v function >.err'
+                    \'     >.err 2>&1'
     endif
     call system(compile_cmd)
     execute 'silent cfile .err' 
