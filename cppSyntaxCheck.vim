@@ -53,7 +53,6 @@ function! s:ShowErrC()
                     \'     >.err 2>&1'
     endif
     call system(compile_cmd)
-    execute 'silent cfile .err' 
     let show_cmd = 'cat .err |grep error|grep ' .file_name
     let compile_result=system(show_cmd)
     let line_list=split(compile_result, '\n')
@@ -90,6 +89,11 @@ function! s:ShowErrC()
         endfor
     endif
     call s:SignErrWarn()
+    if ( len(b:error_list) > 0 )
+        execute 'silent cfile .err' 
+    elseif ( len(b:warning_list) > 0 )
+        execute 'silent cfile .err' 
+    endif
 
     "remove file created
     let rm_cmd='rm .err .tmpobject > /dev/null 2>&1'
