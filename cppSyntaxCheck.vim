@@ -13,7 +13,7 @@ if(!exists("g:compile_flag"))
     let g:compile_flag=' '
 endif
 if(!exists("g:cpp_compiler"))
-    let g:cpp_compiler='LC_MESSAGES=en_US g++ -Wall'
+    let g:cpp_compiler='LC_MESSAGES=en_US g++'
 endif
 if(!exists("g:enable_warning"))
     let g:enable_warning=0
@@ -36,24 +36,28 @@ function! s:ShowErrC()
     let dir_tree=split(buf_name, '/')
     let file_name=dir_tree[len(dir_tree)-1]
     let include_path=substitute(g:include_path, ':', " -I", "g")
+    let include_path_dir=system("find ./ -type d |grep -v \"\.git\"")
+    let include_path_ext=substitute(include_path_dir, '\n', " -I", "g")
+    let include_path_ext = include_path_ext . "./"
+    let include_path = include_path . include_path_ext
 
-    "show error    
+    "show error
     let buf_name_split=split(file_name, '\.')
     if ( 'h' == buf_name_split[len(buf_name_split)-1] )
-        let compile_cmd=g:cpp_compiler . ' -o .tmpobject -c ' . buf_name . ' ' 
-                    \. g:compile_flag . ' ' . include_path . 
-                    \'     >.err 2>&1'
+        let compile_cmd=g:cpp_compiler . ' -o .tmpobject -c ' . buf_name . ' '
+                    \. g:compile_flag . ' ' . include_path .
+                    \'  >.err 2>&1'
     elseif ('hpp' == buf_name_split[len(buf_name_split)-1])
-        let compile_cmd=g:cpp_compiler . ' -o .tmpobject -c ' . buf_name . ' ' 
-                    \. g:compile_flag . ' ' . include_path . 
-                    \'     >.err 2>&1'
+        let compile_cmd=g:cpp_compiler . ' -o .tmpobject -c ' . buf_name . ' '
+                    \. g:compile_flag . ' ' . include_path .
+                    \'   >.err 2>&1'
     else
-        let compile_cmd=g:cpp_compiler . ' -x c++ -fsyntax-only ' . buf_name . ' ' 
-                    \. g:compile_flag . ' ' . include_path . 
-                    \'     >.err 2>&1'
+        let compile_cmd=g:cpp_compiler . ' -x c++ -fsyntax-only ' . buf_name . ' '
+                    \. g:compile_flag . ' ' . include_path .
+                    \'  >.err 2>&1'
     endif
     call system(compile_cmd)
-    let show_cmd = 'cat .err |grep error|grep ' .file_name
+    let show_cmd = 'cat .err |grep error|grep ' . buf_name
     let compile_result=system(show_cmd)
     let line_list=split(compile_result, '\n')
 
@@ -64,7 +68,7 @@ function! s:ShowErrC()
             continue
         endif
         let item={}
-        let item["lnum"]= split_list[1]
+        let item["lnum"] = split_list[1]
         let item["text"] = error_str
         let b:error_list[item.lnum]=item
         let g:error_list[buf_name]=b:error_list
@@ -89,15 +93,14 @@ function! s:ShowErrC()
         endfor
     endif
     call s:SignErrWarn()
-    if ( len(b:error_list) > 0 )
-        execute 'silent cfile .err' 
-    elseif ( len(b:warning_list) > 0 )
-        execute 'silent cfile .err' 
-    endif
+
+"    if (len(b:error_list) > 0)
+"        execute 'silent cfile .err'
+"    endif
 
     "remove file created
-    let rm_cmd='rm .err .tmpobject > /dev/null 2>&1'
-    call system(rm_cmd)
+    "let rm_cmd='rm .err .tmpobject > /dev/null 2>&1'
+    "call system(rm_cmd)
 endfunction
 
 "Clear the dictionary of error
