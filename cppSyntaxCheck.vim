@@ -35,11 +35,12 @@ function! s:ShowErrC()
     let buf_name=bufname("%")
     let dir_tree=split(buf_name, '/')
     let file_name=dir_tree[len(dir_tree)-1]
-    let include_path=substitute(g:include_path, ':', " -I", "g")
+    let include_path=substitute(g:include_path, ':', "\" -I\"", "g")
     let include_path_dir=system("find ./ -type d |grep -v \"\.git\"")
-    let include_path_ext=substitute(include_path_dir, '\n', " -I", "g")
+    let include_path_ext=substitute(include_path_dir, '\n', "\" -I\"", "g")
     let include_path_ext = include_path_ext . "./"
-    let include_path = include_path . include_path_ext
+    let include_path = include_path . include_path_ext . "\""
+    let include_path=substitute(include_path, '\"', " ", "")
 
     "show error
     let buf_name_split=split(file_name, '\.')
@@ -57,6 +58,7 @@ function! s:ShowErrC()
                     \'  >.err 2>&1'
     endif
     call system(compile_cmd)
+"    echo compile_cmd
     let show_cmd = 'cat .err |grep error|grep ' . buf_name
     let compile_result=system(show_cmd)
     let line_list=split(compile_result, '\n')
