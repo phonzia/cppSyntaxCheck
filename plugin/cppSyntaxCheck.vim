@@ -25,7 +25,7 @@ let g:error_list = {}
 let g:warning_list = {}
 let g:buffer_name=''
 
-function! s:ShowErrC()
+function! s:CheckError()
     call s:ClearErr()
 
     let b:error_list={}
@@ -55,7 +55,7 @@ function! s:ShowErrC()
                     \'  >.err 2>&1'
     endif
     call system(compile_cmd)
-"    echo compile_cmd
+    "echo compile_cmd
     let show_cmd = 'cat .err |grep error|grep ' . buf_name
     let compile_result=system(show_cmd)
     let line_list=split(compile_result, '\n')
@@ -77,6 +77,7 @@ function! s:ShowErrC()
     if g:enable_warning!=0
         let b:warning_list={}
         let show_cmd = 'cat .err |grep warning|grep ' .file_name
+        "echo show_cmd
         let compile_result=system(show_cmd)
         let line_list=split(compile_result, '\n')
         for warning_str in line_list
@@ -93,9 +94,7 @@ function! s:ShowErrC()
     endif
     call s:SignErrWarn()
 
-"    if (len(b:error_list) > 0)
-"        execute 'silent cfile .err'
-"    endif
+    "execute 'silent cfile .err'
 
     "remove file created
     "let rm_cmd='rm .err .tmpobject > /dev/null 2>&1'
@@ -172,14 +171,31 @@ function! s:ShowErrMsg()
         if ( len(item.text) < winwidth(0))
             echo item.text
         else
-            echo strpart( item.text, 0 ,winwidth(0) )
+            echo strpart( item.text, 0, winwidth(0))
         endif
     else
         echo
     endif
 endfunction
 
-autocmd BufWritePost *.cpp,*.c,*.h,*.hpp,*.cc call s:ShowErrC()
+function! CPPShowCompMsg()
+    let pos=getpos(".")
+    if has_key(b:error_list, pos[1])
+        let item = get(b:error_list, pos[1])
+        echo item.text
+    else
+        echo
+    endif
+    if has_key(b:warning_list, pos[1])
+        let item = get(b:warning_list, pos[1])
+        echo item.text
+    else
+        echo
+    endif
+endfunction
+
+autocmd BufWritePost *.cpp,*.c,*.h,*.hpp,*.cc call s:CheckError()
 autocmd CursorHold *.cpp,*.h,*.c,*.hpp,*.cc call s:ShowErrMsg()
 autocmd CursorMoved *.cpp,*.h,*.c,*.hpp,*.cc call s:ShowErrMsg()
 map <Leader>s :cn<cr>
+map <Leader>p :call CPPShowCompMsg()<cr>
