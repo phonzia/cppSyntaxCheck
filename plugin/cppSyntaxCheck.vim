@@ -89,7 +89,7 @@ function! s:ShowErrC()
             endif
             let item={}
             let item["lnum"]=split_list[1]
-            let item["text"] = error_str
+            let item["text"] = warning_str
             let b:warning_list[item.lnum]=item
             let g:warning_list[buf_name]=b:warning_list
         endfor
