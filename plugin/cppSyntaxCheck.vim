@@ -18,9 +18,6 @@ endif
 if(!exists("g:enable_warning"))
     let g:enable_warning=0
 endif
-if(!exists("g:longest_text"))
-    let g:longest_text=100
-endif
 
 sign define GCCError text=>> texthl=Error
 sign define GCCWarning text=>> texthl=Todo
@@ -162,7 +159,7 @@ function! s:ShowErrMsg()
     let pos=getpos(".")
     if has_key(b:error_list, pos[1])
         let item = get(b:error_list, pos[1])
-        if ( len(item.text) < g:longest_text )
+        if ( len(item.text) < winwidth(0))
             echo item.text
         else
             echo strpart( item.text, 0 ,g:longest_text )
@@ -172,7 +169,7 @@ function! s:ShowErrMsg()
     endif
     if has_key(b:warning_list, pos[1])
         let item = get(b:warning_list, pos[1])
-        if ( len(item.text) < g:longest_text )
+        if ( len(item.text) < winwidth(0))
             echo item.text
         else
             echo strpart( item.text, 0 ,g:longest_text )

@@ -13,7 +13,6 @@ version 1.1
 <p>let g:cpp_compiler="/usr/bin/g++"
 <p>let g:enable_warning=1
 <p>let g:cpp_compiler="LANG=C g++ -Wall"
-<p>let g:longest_text=120
 
 Key binding:
 \<Leader\>s      go to next signed error or warning line
