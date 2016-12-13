@@ -15,6 +15,7 @@ You can add statements below in order to adjust to your environment
     let g:enable_warning=1
     let g:cpp_compiler="LANG=C g++ -Wall"
 
-Key binding:
-\<Leader\>s      go to next signed error or warning line
-\<Leader\>p      show complete error message, very useful when error message is too long to be displayed
+## Key binding:
+
+* \<Leader\>s      go to next signed error or warning line
+* \<Leader\>p      show complete error message, very useful when error message is too long to be displayed
