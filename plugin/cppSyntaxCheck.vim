@@ -162,7 +162,7 @@ function! s:ShowErrMsg()
         if ( len(item.text) < winwidth(0))
             echo item.text
         else
-            echo strpart( item.text, 0 ,g:longest_text )
+            echo strpart( item.text, 0 ,winwidth(0) )
         endif
     else
         echo
@@ -172,7 +172,7 @@ function! s:ShowErrMsg()
         if ( len(item.text) < winwidth(0))
             echo item.text
         else
-            echo strpart( item.text, 0 ,g:longest_text )
+            echo strpart( item.text, 0 ,winwidth(0) )
         endif
     else
         echo
