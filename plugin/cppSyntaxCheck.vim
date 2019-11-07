@@ -194,8 +194,12 @@ function! CPPShowCompMsg()
     endif
 endfunction
 
-autocmd BufWritePost *.cpp,*.c,*.h,*.hpp,*.cc call s:CheckError()
-autocmd CursorHold *.cpp,*.h,*.c,*.hpp,*.cc call s:ShowErrMsg()
-autocmd CursorMoved *.cpp,*.h,*.c,*.hpp,*.cc call s:ShowErrMsg()
+augroup cppsyntax
+	autocmd!
+	autocmd BufWritePost *.cpp,*.c,*.h,*.hpp,*.cc call s:CheckError()
+	autocmd CursorHold *.cpp,*.h,*.c,*.hpp,*.cc call s:ShowErrMsg()
+	autocmd CursorMoved *.cpp,*.h,*.c,*.hpp,*.cc call s:ShowErrMsg()
+augroup END
+
 map <Leader>s :cn<cr>
 map <Leader>p :call CPPShowCompMsg()<cr>
